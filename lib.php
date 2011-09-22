@@ -259,7 +259,7 @@ function teambuilder_get_responses($id, $student = null) {
         else
         {
             $ctxt = get_context_instance(CONTEXT_COURSE,$teambuilder->course);
-            $students = get_users_by_capability($ctxt, 'mod/teambuilder:respond');
+            $students = get_users_by_capability($ctxt, 'mod/teambuilder:respond', 'u.id');
         }
         $responses = array();
         foreach($students as $s)
