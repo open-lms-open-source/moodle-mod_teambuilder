@@ -15,7 +15,7 @@
 	margin:15px 10px;
 }
 
-#newQuestionForm {
+.path-mod-teambuilder #newQuestionForm {
 	background-color:#F9F9F9;
 	border:1px solid #999;
 	padding:5px;
@@ -24,28 +24,28 @@
 	text-align:left;
 }
 
-.answers ul li {
+.path-mod-teambuilder .answers ul li {
     list-style: none;
 }
 
-.question {
+.path-mod-teambuilder .question {
 	border:1px solid #CCC;
 	padding:10px;
 	margin:10px;
 	background-color:#FFF;
 }
 
-.question table {
+.path-mod-teambuilder .question table {
 	border-collapse:collapse;
 	width:100%;
 }
 
-.question ul {
+.path-mod-teambuilder .question ul {
 	margin:0px;
     margin-left: 2em;
 }
 
-.question .handle {
+.path-mod-teambuilder .question .handle {
 	background-image:url('../../mod/teambuilder/css/handle.png');
 	background-position: center center;
 	width:23px;
@@ -53,47 +53,47 @@
 	background-repeat: no-repeat;
 }
 
-.question .edit {
+.path-mod-teambuilder .question .edit {
 	text-align:right;
 }
 
-.question .edit a {
+.path-mod-teambuilder .question .edit a {
 	cursor:pointer;
 }
 
-.question .type {
+.path-mod-teambuilder .question .type {
 	font-size:0.9em;
 	color:#999;
 }
 
-.question .questionText {
+.path-mod-teambuilder .question .questionText {
 	font-weight:bold;
 	font-size:1.1em;
 }
 
-#savingIndicator {
+.path-mod-teambuilder #savingIndicator {
 	color:#F00;
 }
 
-.question .response {
+.path-mod-teambuilder .question .response {
 	display:inline-block;
 	margin-right:5px;
 	margin-top:2px;
 	margin-bottom:2px;
 }
 
-.ui-state-error .type {
+.path-mod-teambuilder .ui-state-error .type {
 	color:#FC0;
 	font-weight:bold;
 }
 
-.ui-state-error .type strong {
+.path-mod-teambuilder .ui-state-error .type strong {
 	text-decoration:underline;
 }
 
 /* Build Teams page */
 
-#unassigned {
+.path-mod-teambuilder #unassigned {
 	border:1px solid #CCC;
 	background-color:#F9F9F9;
 	margin:5px;
@@ -101,33 +101,33 @@
 	position:relative;
 }
 
-#unassigned h2 {
+.path-mod-teambuilder #unassigned h2 {
 	margin:2px;
 	margin-left:25px;
 }
 
-#unassigned button {
+.path-mod-teambuilder #unassigned button {
 	position:absolute;
 	right: 5px;
 	top: 5px;
 }
 
-.answered {
+.path-mod-teambuilder .answered {
     color: green !important;
 }
 
-.unanswered {
+.path-mod-teambuilder .unanswered {
     color: red !important;
 }
 
-.student {
+.path-mod-teambuilder .student {
 	display:inline-block;
 	padding:10px;
 	margin:5px;
 	cursor:default;
 }
 
-.team {
+.path-mod-teambuilder .team {
 	margin:5px;
 	padding:5px;
 	border:1px solid #CCC;
@@ -136,21 +136,21 @@
 	vertical-align:top;
 }
 
-.team h2 {
+.path-mod-teambuilder .team h2 {
 	margin:2px;
 }
 
-.sortable {
+.path-mod-teambuilder .sortable {
 	min-height:20px;
 }
 
-.criterionWrapper {
+.path-mod-teambuilder .criterionWrapper {
 	text-align:center;
 	margin:3px 10px;
 	display:none;
 }
 
-.criterion {
+.path-mod-teambuilder .criterion {
 	display:inline-block;
 	border:1px solid #CCC;
 	margin:auto;
@@ -160,7 +160,7 @@
 	position:relative;
 }
 
-.criterionDelete {
+.path-mod-teambuilder .criterionDelete {
 	display:none;
 	position:absolute;
 	right:-10px;
@@ -173,18 +173,18 @@
 	cursor:pointer;
 }
 
-.criterion ul {
+.path-mod-teambuilder .criterion ul {
 	text-align:left;
 	list-style-type:none;
 	padding:0px;
 	margin:0px 10px 5px;
 }
 
-.subcriterionWrapper {
+.path-mod-teambuilder .subcriterionWrapper {
 	position:relative;
 }
 
-.boolOper { 
+.path-mod-teambuilder .boolOper { 
 	background-image:url('../../mod/teambuilder/css/bool.png');
 	background-position: center bottom;
 	background-repeat:no-repeat;
@@ -198,11 +198,11 @@
 	text-align:center;
 }
 
-.selected {
+.path-mod-teambuilder .selected {
 	color:#008000;
 }
 
-#createGroupsForm {
+.path-mod-teambuilder #createGroupsForm {
 	border: 1px solid #A00;
 	padding:5px;
 	background-color: #FEE;
@@ -210,18 +210,18 @@
 	margin:5px auto;
 }
 
-#createGroupsForm p {
+.path-mod-teambuilder #createGroupsForm p {
 	margin:2px;
 	font-size:1.1em;
 	font-weight:bold;
 }
 
-#createGroupsForm button {
+.path-mod-teambuilder #createGroupsForm button {
 	width:85px;
 	font-size:1em;
 }
 
-.runningCounter {
+.path-mod-teambuilder .runningCounter {
 	position:absolute;
 	right:5px;
 	bottom:5px;
@@ -230,7 +230,7 @@
 	font-size:1.5em;
 }
 
-.studentResponse {
+.path-mod-teambuilder .studentResponse {
 	position:absolute;
 	background-image:url('../../mod/teambuilder/css/b75.png');
 	border:1px single white;
@@ -238,20 +238,20 @@
 	color:#FFF;
 }
 
-.studentResponse table {
+.path-mod-teambuilder .studentResponse table {
 	border-collapse:collapse;
 }
 
-.studentResponse table td, .studentResponse table th {
+.path-mod-teambuilder .studentResponse table td, .studentResponse table th {
 	border-top:1px solid white;
 	border-bottom:1px solid white;
 }
 
-.studentResponse table th {
+.path-mod-teambuilder .studentResponse table th {
 	vertical-align:middle;
 }
 
-.add_sub {
+.path-mod-teambuilder .add_sub {
 	position:absolute;
 	left:0px;
 	bottom:0px;
@@ -262,13 +262,13 @@
 
 /* Stepper */
 
-.stepper > span {
+.path-mod-teambuilder .stepper > span {
 	border:1px solid #BBB;
 	background-color:#EEE;
 	width:17px;
 }
 
-.stepper > span > span {
+.path-mod-teambuilder .stepper > span > span {
 	border-width:0px 1px;
 	border-color:#CCB;
 	border-style:solid;
@@ -276,7 +276,7 @@
 	background-color:#FAFAEE;
 }
 
-.ui-stepper-up {
+.path-mod-teambuilder .ui-stepper-up {
 	background-image:url('../../mod/teambuilder/css/up.png');
 	background-color:#EEE;
 	background-position: center center;
@@ -287,7 +287,7 @@
 	display:inline-block;
 }
 
-.ui-stepper-down {
+.path-mod-teambuilder .ui-stepper-down {
 	background-image:url('../../mod/teambuilder/css/down.png');
 	background-position: center center;
 	background-repeat: no-repeat;
