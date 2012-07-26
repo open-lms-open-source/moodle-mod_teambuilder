@@ -799,12 +799,10 @@ function createGroups() {
 	{
 		var tn = teamNames[i];
 		var assign = teamAssignments[i];
-		for(j = 0; j < assign.length; j++)
-		{
-			var ta = assign[j];
-			var input = $('<input type="hidden" name="teams['+tn+'][]" value="'+ta+'" />')
-			form.append(input);
-		}
+		var tnInput = $('<input type="hidden" name="teamnames['+i+']" value="'+tn+'" />');
+		form.append(tnInput)
+		var input = $('<input type="hidden" name="teams['+i+']" value="'+assign.join(",")+'" />')
+		form.append(input);
 	}
 	
 	var action = $('<input type="hidden" name="action" value="create-groups" />');
