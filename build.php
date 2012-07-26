@@ -29,7 +29,8 @@ $grouping_name = trim(optional_param('groupingName', null, PARAM_TEXT));
 $inherit_grouping_name = optional_param('inheritGroupingName', 0, PARAM_INT);
 $nogrouping = optional_param('nogrouping', 0, PARAM_INT);
 
-$teams = optional_param('teams', array(), PARAM_RAW);
+$teams = optional_param_array('teams', array(), PARAM_RAW);
+$team_names = optional_param_array('teamnames', array(), PARAM_TEXT);
 
 if ($id) {
     if (! $cm = get_coursemodule_from_id('teambuilder', $id)) {
@@ -92,8 +93,10 @@ if(!is_null($action) && $action == "create-groups")
         }
     }
 
-    foreach($teams as $name => $team)
+    foreach($teams as $k => $teamstr)
     {
+		$name = $team_names[$k];
+		$team = explode(",",$teamstr);
         $oname = !$nogrouping && $inherit_grouping_name ? "$grouping_name $name" : $name;
         $groupdata = new stdClass();
         $groupdata->courseid = $course->id;
