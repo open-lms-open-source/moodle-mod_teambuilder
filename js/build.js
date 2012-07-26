@@ -478,6 +478,8 @@ function buildTeams()
 		}
 	});
 	
+	//options
+	var prioritise = $("#prioritise").val();
 	
 	unassignedStudents = {};
 	assignedStudents = {};
@@ -542,6 +544,22 @@ function buildTeams()
 			return teamsPriority[a] - teamsPriority[b];
 		}
 		teamsList = teamsList.sort(teamsSortingFunction);
+		
+		if (prioritise == "numbers")
+		{
+			function teamsSortingFunction2(a,b)
+			{
+				return teamAssignments[a].length - teamAssignments[b].length;
+			}
+			teamsList = teamsList.sort(teamsSortingFunction2);
+			__debug("teams list");
+			__debug(teamAssignments);
+			__debug(teamsList)
+			
+			TWO_JOBS_PRIORITY = 2;
+		} else {
+			TWO_JOBS_PRIORITY = 1;
+		}
 		
 		ucandidates = randomiseArray(ucandidates);
 		acandidates = randomiseArray(acandidates);
@@ -643,6 +661,8 @@ function buildTeams()
 		
 		__debug(teamAssignments);
 		__debug(teamsPriority);
+		
+		__debug("<br/>");
 		
 	}
 	

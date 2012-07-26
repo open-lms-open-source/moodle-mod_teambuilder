@@ -143,6 +143,7 @@ echo <<<HTML
 </div>
 <div style="text-align:center;margin:10px;"><button type="button" onclick="addNewCriterion();">Add New Criterion</button>&nbsp;<button type="button" onclick="buildTeams();"><strong>Build Teams</strong></button>&nbsp;<button type="button" onclick="resetTeams();">Reset Teams</button></div>
 <div style="text-align:center;margin:10px;">Number of teams: <span class="stepper">2</span></div>
+<div style="text-align:center;">Prioritize: <select id="prioritise"><option value="numbers" selected="selected">equal team numbers</option><option value="criteria">most criteria met</option></select></div>
 <div id="unassigned"><h2>Unassigned to teams</h2><button type="button" onclick="assignRandomly();">Assign Randomly</button><div class="sortable">
 HTML;
 
