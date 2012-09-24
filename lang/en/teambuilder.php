@@ -15,4 +15,6 @@ $string['questionnaire'] = 'Questionnaire';
 
 $string['teambuilder'] = 'Team Builder';
 $string['teambuilder:addinstance'] = 'Add a new teambuilder module';
+$string['teambuilder:build'] = 'Build teams from survey response';
+$string['teambuilder:create'] = 'Create survey';
 $string['teambuilder:respond'] = 'Respond to Questionnaire';
