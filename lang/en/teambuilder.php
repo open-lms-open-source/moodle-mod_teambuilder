@@ -14,4 +14,5 @@ $string['preview'] = 'Preview';
 $string['questionnaire'] = 'Questionnaire';
 
 $string['teambuilder'] = 'Team Builder';
+$string['teambuilder:addinstance'] = 'Add a new teambuilder module';
 $string['teambuilder:respond'] = 'Respond to Questionnaire';

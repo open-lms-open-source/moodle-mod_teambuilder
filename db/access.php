@@ -1,6 +1,18 @@
 <?php
 
 $capabilities = array(
+    //can add new teambuilder activities
+    'mod/teambuilder:addinstance' => array(
+            'riskbitmask' => RISK_XSS,
+            'captype' => 'write',
+            'contextlevel' => CONTEXT_COURSE,
+            'archetypes' => array(
+                'editingteacher' => CAP_ALLOW,
+                'manager' => CAP_ALLOW
+            ),
+            'clonepermissionsfrom' => 'moodle/course:manageactivities'
+        ),
+
     //create survey
     'mod/teambuilder:create' => array(
             'captype' => 'write',
