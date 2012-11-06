@@ -217,7 +217,10 @@ function updateRunningCounter(criterion) {
 	ctr = 0;
 	for(i in students)
 	{
-//			s = students[i];
+    if(responses[i] === false)
+    { // don't count students with no response
+      continue;
+    }
 		if(studentMeetsCriterion(i,c))
 		{
 			ctr++;
@@ -491,6 +494,14 @@ function buildTeams()
 		rslt = /student-(\d+)/.exec(this.id);
 		assignedStudents[rslt[1]] = students[rslt[1]];
 	});
+  
+  //get rid of students with no responses
+  $.each(responses, function(k, v){
+    if (v === false) {
+      delete assignedStudents[k];
+      delete unassignedStudents[k];
+    }
+  });
 	
 	//initialise teamsPriority to all zeroes
 	teamsPriority = [];
@@ -693,6 +704,8 @@ function studentsMeetingCriterionGroup(students,criterionGroup)
 function studentMeetsCriterion(student,criterion)
 {
 	sr = responses[student]; //student responses
+  if(sr === false) 
+    return false; //students without a response cannot meet a criterion
 	
 	var ret; //return value
 	
