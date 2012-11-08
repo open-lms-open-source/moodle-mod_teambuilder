@@ -287,4 +287,10 @@ function teambuilder_get_responses($id, $student = null) {
     return $ret;
 }
 
-?>
+function teambuilder_supports($feature) {
+    switch($feature) {
+        case FEATURE_MOD_INTRO:               return true;
+
+        default: return null;
+    }
+}
