@@ -120,7 +120,7 @@ else
     } else {
         $group = '';
     }
-    $students = get_users_by_capability($ctxt,'mod/teambuilder:respond','u.id,u.firstname,u.lastname','','','',$group,'',false);
+    $students = get_enrolled_users($ctxt, 'mod/teambuilder:respond', $group, 'u.id,u.firstname,u.lastname');
     $responses = teambuilder_get_responses($teambuilder->id);
     $questions = teambuilder_get_questions($teambuilder->id);
 
