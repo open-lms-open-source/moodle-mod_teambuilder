@@ -14,9 +14,24 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * The mod_teambuilder instance list viewed event.
+ *
+ * @package    mod_teambuilder
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+namespace mod_teambuilder\event;
+
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2014082600;
-$plugin->requires = 2014050800;
-$plugin->component = 'mod_teambuilder';
-$plugin->cron = 0;
+/**
+ * The mod_teambuilder instance list viewed event class.
+ *
+ * @package    mod_teambuilder
+ * @since      Moodle 2.7
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+class course_module_instance_list_viewed extends \core\event\course_module_instance_list_viewed {
+    // No need for any code here as everything is handled by the parent class.
+}

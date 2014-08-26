@@ -19,6 +19,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="course" UNIQUE="false" FIELDS="course"/>
+      </INDEXES>
     </TABLE>
     <TABLE NAME="teambuilder_question" COMMENT="teambuilder_question table retrofitted from MySQL" PREVIOUS="teambuilder" NEXT="teambuilder_answer">
       <FIELDS>
@@ -59,6 +62,9 @@
       <KEYS>
         <KEY NAME="primary" TYPE="primary" FIELDS="id"/>
       </KEYS>
+      <INDEXES>
+        <INDEX NAME="answerid-userid" UNIQUE="false" FIELDS="answerid,userid"/>
+      </INDEXES>
     </TABLE>
   </TABLES>
 </XMLDB>

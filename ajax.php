@@ -25,13 +25,11 @@ if (! $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance)
     $output['message'] ='Course module is incorrect';
 }
 
-//alright
+// Alright.
 
-if(!isset($output['status']) || $output['status']!='fail')
-{
-    $ctxt = get_context_instance(CONTEXT_MODULE,$cm->id);
-    switch($action)
-    {
+if(!isset($output['status']) || $output['status']!='fail') {
+    $ctxt = course_module::instance($cm->id);
+    switch($action) {
         case "saveQuestionnaire":
         {
             require_capability('mod/teambuilder:create',$ctxt);
@@ -85,5 +83,3 @@ if(!isset($output['status']) || $output['status']!='fail')
 }
 
 echo json_encode($output);
-
-?>
