@@ -62,7 +62,7 @@ if ($id) {
 
 require_login($course, true, $cm);
 
-$ctxt = course_module::instance($cm->id);
+$ctxt = context_module::instance($cm->id);
 require_capability("mod/teambuilder:build",$ctxt);
 
 $strteambuilders = get_string('modulenameplural', 'teambuilder');

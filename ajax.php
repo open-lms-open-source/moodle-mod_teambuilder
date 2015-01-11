@@ -28,7 +28,7 @@ if (! $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance)
 // Alright.
 
 if(!isset($output['status']) || $output['status']!='fail') {
-    $ctxt = course_module::instance($cm->id);
+    $ctxt = context_module::instance($cm->id);
     switch($action) {
         case "saveQuestionnaire":
         {

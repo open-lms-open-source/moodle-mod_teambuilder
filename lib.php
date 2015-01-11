@@ -171,7 +171,7 @@ function teambuilder_get_responses($id, $student = null) {
         if($teambuilder->groupid) {
             $students = groups_get_members($teambuilder->groupid,"u.id");
         } else {
-            $ctxt = course_course::instance($teambuilder->course);
+            $ctxt = context_course::instance($teambuilder->course);
             $students = get_users_by_capability($ctxt, 'mod/teambuilder:respond', 'u.id');
         }
         $responses = array();
