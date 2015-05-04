@@ -60,7 +60,11 @@ if ($action == "submit-questionnaire") {
     $questions = teambuilder_get_questions($teambuilder->id,$USER->id);
     if(has_capability('mod/teambuilder:respond', $ctxt)) {
         foreach($questions as $q) {
-            $response = optional_param('question-'.$q->id, 0, PARAM_RAW);
+            if ($q->type === 'one') {
+                $response = optional_param('question-'.$q->id, 0, PARAM_RAW);
+            } else {
+                $response = optional_param_array('question-'.$q->id, 0, PARAM_RAW);
+            }
             // Delete all their old answers.
             foreach($q->answers as $a) {
                 if ($a->selected) {
