@@ -16,7 +16,8 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2014082600;
+$plugin->version = 2014082601;
 $plugin->requires = 2014050800;
 $plugin->component = 'mod_teambuilder';
+$plugin->maturity = MATURITY_STABLE;
 $plugin->cron = 0;
