@@ -201,8 +201,11 @@ function teambuilder_get_responses($id, $student = null) {
 
 function teambuilder_supports($feature) {
     switch($feature) {
-        case FEATURE_MOD_INTRO:               return true;
-
-        default: return null;
+        case FEATURE_MOD_INTRO:
+            return true;
+        case FEATURE_BACKUP_MOODLE2:
+            return true;
+        default:
+            return null;
     }
 }
