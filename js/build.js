@@ -587,10 +587,32 @@ function buildTeams()
 			//best case scenario - assign at random
 			__debug("Best case");
 			__debug(ucandidates);
-			for(j in teamsList)
+			unassignedStudents = ucandidates;
+			
+			while(unassignedStudents.length > 0)
 			{
-				t = teamsList[j];
-				teamAssignments[t].push(ucandidates[j]);
+				//get the team(s) with the lowest numbers
+				var lowestTeam = 0; var lowestTeams = [];
+				
+				//skip the 0th team since otherwise we compare it to itself
+				for(i = 1; i < teamAssignments.length; i++)
+				{
+					t = teamAssignments[i];
+					lt = teamAssignments[lowestTeam];
+					
+					if(t.length < lt.length)
+					{
+						lowestTeam = i;
+						lowestTeams = [];
+					}
+					else if(t.length == lt.length)
+						lowestTeams.push(i);
+				}
+				lowestTeams.push(lowestTeam);
+
+				//pick a random team from the list of lowest teams
+				do { randomTeam = Math.floor(Math.random() * lowestTeams.length); } while (randomTeam >= lowestTeams.length) //on the OFF CHANCE that Math.random() produces 1
+				teamAssignments[lowestTeams[randomTeam]].push(unassignedStudents.pop());
 			}
 		}
 		else
