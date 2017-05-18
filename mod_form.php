@@ -34,7 +34,7 @@ class mod_teambuilder_mod_form extends moodleform_mod {
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
 
         // Adding the required "intro" field to hold the description of the instance.
-        $this->add_intro_editor(false, get_string('intro', 'teambuilder'));
+        $this->standard_intro_elements(get_string('intro', 'teambuilder'));
         $mform->addHelpButton('introeditor', 'intro', 'teambuilder');
 
         // Adding the rest of teambuilder settings, spreeading all them into this fieldset
