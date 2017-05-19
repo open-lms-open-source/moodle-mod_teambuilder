@@ -42,6 +42,9 @@ $groupingid = optional_param('groupingID', 0, PARAM_INT);
 $groupingname = trim(optional_param('groupingName', null, PARAM_TEXT));
 $inheritgroupingname = optional_param('inheritGroupingName', 0, PARAM_INT);
 $nogrouping = optional_param('nogrouping', 0, PARAM_INT);
+if (!$nogrouping) {
+    $nogrouping = empty($groupingid) && empty($groupingname);
+}
 
 $teams = optional_param_array('teams', array(), PARAM_RAW);
 $teamnames = optional_param_array('teamnames', array(), PARAM_TEXT);
