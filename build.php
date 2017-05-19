@@ -1,16 +1,29 @@
-<?php  // $Id: view.php,v 1.6.2.3 2009/04/17 22:06:25 skodak Exp $
+<?php
+// This file is part of Moodle - http://moodle.org/
+//
+// Moodle is free software: you can redistribute it and/or modify
+// it under the terms of the GNU General Public License as published by
+// the Free Software Foundation, either version 3 of the License, or
+// (at your option) any later version.
+//
+// Moodle is distributed in the hope that it will be useful,
+// but WITHOUT ANY WARRANTY; without even the implied warranty of
+// MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+// GNU General Public License for more details.
+//
+// You should have received a copy of the GNU General Public License
+// along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
- * This page prints a particular instance of teambuilder
+ * Controller for building a teambuilder.
  *
- * @author  Your Name <your@email.address>
- * @version $Id: view.php,v 1.6.2.3 2009/04/17 22:06:25 skodak Exp $
- * @package mod/teambuilder
+ * @package    mod_teambuilder
+ * @copyright  UNSW
+ * @author     UNSW
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-/// (Replace teambuilder with the name of your module and remove this line)
-
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/../../config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->dirroot.'/group/lib.php');
 
@@ -20,17 +33,17 @@ $PAGE->requires->js("/mod/teambuilder/js/json2.js");
 $PAGE->requires->js("/mod/teambuilder/js/build.js");
 $PAGE->requires->css('/mod/teambuilder/styles.css');
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$a  = optional_param('a', 0, PARAM_INT);  // teambuilder instance ID
+$id = optional_param('id', 0, PARAM_INT); // The course_module ID, or...
+$a  = optional_param('a', 0, PARAM_INT);  // Teambuilder instance ID.
 $preview = optional_param('preview', 0, PARAM_INT);
 $action = optional_param('action', null, PARAM_TEXT);
-$grouping_id = optional_param('groupingID', 0, PARAM_INT);
-$grouping_name = trim(optional_param('groupingName', null, PARAM_TEXT));
-$inherit_grouping_name = optional_param('inheritGroupingName', 0, PARAM_INT);
+$groupingid = optional_param('groupingID', 0, PARAM_INT);
+$groupingname = trim(optional_param('groupingName', null, PARAM_TEXT));
+$inheritgroupingname = optional_param('inheritGroupingName', 0, PARAM_INT);
 $nogrouping = optional_param('nogrouping', 0, PARAM_INT);
 
 $teams = optional_param_array('teams', array(), PARAM_RAW);
-$team_names = optional_param_array('teamnames', array(), PARAM_TEXT);
+$teamnames = optional_param_array('teamnames', array(), PARAM_TEXT);
 
 if ($id) {
     if (! $cm = get_coursemodule_from_id('teambuilder', $id)) {
@@ -63,7 +76,7 @@ if ($id) {
 require_login($course, true, $cm);
 
 $ctxt = context_module::instance($cm->id);
-require_capability("mod/teambuilder:build",$ctxt);
+require_capability("mod/teambuilder:build", $ctxt);
 
 $strteambuilders = get_string('modulenameplural', 'teambuilder');
 $strteambuilder  = get_string('modulename', 'teambuilder');
@@ -80,44 +93,41 @@ echo $OUTPUT->header();
 if(!is_null($action) && $action == "create-groups")
 {
     if (!$nogrouping) {
-        if (strlen($grouping_name) > 0) {
+        if (strlen($groupingname) > 0) {
             $data = new stdClass();
             $data->courseid = $course->id;
-            $data->name = $grouping_name;
+            $data->name = $groupingname;
             $grouping = groups_create_grouping($data);
         } else {
-            $grouping = groups_get_grouping($grouping_id);
-            $grouping_name = $grouping->name;
+            $grouping = groups_get_grouping($groupingid);
+            $groupingname = $grouping->name;
             $grouping = $grouping->id;
         }
     }
 
-    foreach($teams as $k => $teamstr)
-    {
-		$name = $team_names[$k];
-		$team = explode(",",$teamstr);
-        $oname = !$nogrouping && $inherit_grouping_name ? "$grouping_name $name" : $name;
+    foreach ($teams as $k => $teamstr) {
+        $name = $teamnames[$k];
+        $team = explode(",", $teamstr);
+        $oname = !$nogrouping && $inheritgroupingname ? "$groupingname $name" : $name;
         $groupdata = new stdClass();
         $groupdata->courseid = $course->id;
         $groupdata->name = $oname;
         $group = groups_create_group($groupdata);
-        foreach($team as $user)
-        {
-            groups_add_member($group,$user);
+        foreach ($team as $user) {
+            if (!empty($user)) {
+                groups_add_member($group, $user);
+            }
         }
         if (!$nogrouping) {
-            groups_assign_grouping($grouping,$group);
+            groups_assign_grouping($grouping, $group);
         }
     }
 
     $feedback = "Your groups were successfully created.";
-}
-else
-{
-    if($teambuilder->groupid) {
+} else {
+    $group = '';
+    if ($teambuilder->groupid) {
         $group = $teambuilder->groupid;
-    } else {
-        $group = '';
     }
     $students = get_enrolled_users($ctxt, 'mod/teambuilder:respond', $group, 'u.id,u.firstname,u.lastname', null, 0, 0, true);
     $responses = teambuilder_get_responses($teambuilder->id);

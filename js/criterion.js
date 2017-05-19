@@ -19,18 +19,16 @@ for each criterion:
 
 */
 
-var criterion = function(name) {  
-	this.name = name;
-	criterion.prototype.create = function() {
-		var creator = $('<div> \
+var criterion = function(name) {
+    this.name = name;
+    criterion.prototype.create = function () {
+        var creator = $('<div> \
 			At least one person answered: \
 			<div><select id="question-dropdown"></select></div> \
 			with <select id="cardinality"><option value="0">one</option><option value="1">all</option></select> \
 			of the following answers: \
 			<div id="answers"></div>');
-		creator.dialog({
-			
-		})
-        
-  }
-};​
+        creator.dialog({})
+
+    }
+};

@@ -26,9 +26,9 @@
 defined('MOODLE_INTERNAL') || die();
 
 $logs = array(
-    array('module'=>'teambuilder', 'action'=>'view', 'mtable'=>'teambuilder', 'field'=>'name'),
-    array('module'=>'teambuilder', 'action'=>'view all', 'mtable'=>'teambuilder', 'field'=>'name'),
-    array('module'=>'teambuilder', 'action'=>'delete answer', 'mtable'=>'teambuilder_response', 'field'=>'answerid'),
-    array('module'=>'teambuilder', 'action'=>'add answer', 'mtable'=>'teambuilder_response', 'field'=>'answerid'),
-    array('module'=>'teambuilder', 'action'=>'add several answers', 'mtable'=>'teambuilder_response', 'field'=>'answerid'),
+    array('module' => 'teambuilder', 'action' => 'view', 'mtable' => 'teambuilder', 'field' => 'name'),
+    array('module' => 'teambuilder', 'action' => 'view all', 'mtable' => 'teambuilder', 'field' => 'name'),
+    array('module' => 'teambuilder', 'action' => 'delete answer', 'mtable' => 'teambuilder_response', 'field' => 'answerid'),
+    array('module' => 'teambuilder', 'action' => 'add answer', 'mtable' => 'teambuilder_response', 'field' => 'answerid'),
+    array('module' => 'teambuilder', 'action' => 'add several answers', 'mtable' => 'teambuilder_response', 'field' => 'answerid'),
 );

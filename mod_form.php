@@ -14,6 +14,18 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
+/**
+ * Teambuilder course module editing form.
+ *
+ * @package    mod_teambuilder
+ * @copyright  UNSW
+ * @author     UNSW
+ * @author     Morgan Harris
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
 require_once($CFG->dirroot.'/course/moodleform_mod.php');
 require_once($CFG->dirroot.'/lib/grouplib.php');
 
@@ -28,7 +40,7 @@ class mod_teambuilder_mod_form extends moodleform_mod {
         $mform->addElement('header', 'general', get_string('general', 'form'));
 
         // Adding the standard "name" field.
-        $mform->addElement('text', 'name', get_string('name', 'teambuilder'), array('size'=>'64'));
+        $mform->addElement('text', 'name', get_string('name', 'teambuilder'), array('size' => '64'));
         $mform->setType('name', PARAM_TEXT);
         $mform->addRule('name', null, 'required', null, 'client');
         $mform->addRule('name', get_string('maximumchars', '', 255), 'maxlength', 255, 'client');
@@ -42,12 +54,13 @@ class mod_teambuilder_mod_form extends moodleform_mod {
 
         $groups = groups_get_all_groups($COURSE->id);
         $options[0] = 'All Students';
-        foreach($groups as $group)
+        foreach ($groups as $group) {
             $options[$group->id] = $group->name;
+        }
         $mform->addElement('select', 'groupid', 'Group', $options);
 
         $mform->addElement('date_time_selector', 'open', 'Open Date');
-        $mform->addElement('static','openInfo','','You will not be able to modify your questionnaire after this date.');
+        $mform->addElement('static', 'openInfo', '', 'You will not be able to modify your questionnaire after this date.');
         $mform->addElement('date_time_selector', 'close', 'Close Date');
         $mform->addElement('checkbox', 'allowupdate', 'Allow updating of answers');
 
@@ -71,10 +84,10 @@ class mod_teambuilder_mod_form extends moodleform_mod {
             $dta = $mform->getElementValue('open');
             $dt = mktime($dta['hour'][0], $dta['minute'][0], 0, $dta['month'][0], $dta['day'][0], $dta['year'][0]);
             if ($dt < time()) {
-                $el = $mform->createElement('static','openlabel','Open',date("D d/m/Y H:i",$dt));
-                $mform->insertElementBefore($el,'open');
+                $el = $mform->createElement('static', 'openlabel', 'Open', date("D d/m/Y H:i", $dt));
+                $mform->insertElementBefore($el, 'open');
                 $mform->removeElement('open');
-                $mform->addElement('hidden','opendt',$dt);
+                $mform->addElement('hidden', 'opendt', $dt);
             }
         }
     }

@@ -15,6 +15,18 @@
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
 /**
+ * Teambuilder library.
+ *
+ * @package    mod_teambuilder
+ * @copyright  UNSW
+ * @author     UNSW
+ * @author     Morgan Harris
+ * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
+ */
+
+defined('MOODLE_INTERNAL') || die();
+
+/**
  * Given an object containing all the necessary data,
  * (defined by the form in mod_form.php) this function
  * will create a new instance and return the id number
@@ -89,10 +101,9 @@ function teambuilder_user_complete($course, $user, $mod, $teambuilder) {
  * Return true if there was output, or false is there was none.
  *
  * @return boolean
- * @todo Finish documenting this function
  */
 function teambuilder_print_recent_activity($course, $isteacher, $timestart) {
-    return false;  //  True if anything was printed, otherwise false
+    return false;
 }
 
 /**
@@ -134,17 +145,14 @@ function teambuilder_scale_used_anywhere($scaleid) {
 }
 
 
-function teambuilder_get_questions($id,$userid = null) {
+function teambuilder_get_questions($id, $userid = null) {
     global $DB;
     if ($questions = $DB->get_records("teambuilder_question", array("builder" => $id), "ordinal ASC")) {
-        foreach($questions as &$q)
-        {
+        foreach ($questions as &$q) {
             $q->answers = $DB->get_records("teambuilder_answer", array("question" => $q->id), "ordinal ASC");
-            if($userid)
-            {
-                foreach($q->answers as &$a)
-                {
-                    if($DB->get_record("teambuilder_response", array("userid" => $userid, "answerid" => $a->id))) {
+            if ($userid) {
+                foreach ($q->answers as &$a) {
+                    if ($DB->get_record("teambuilder_response", array("userid" => $userid, "answerid" => $a->id))) {
                         $a->selected = true;
                     } else {
                         $a->selected = false;
@@ -160,23 +168,23 @@ function teambuilder_get_questions($id,$userid = null) {
 /**
  * Get responses for a particular team builder questionnaire.
  *
- * @param int $id Team Builder id
- * @return An array of student ids => array of answers they selected
  * @author Morgan Harris
+ * @param int $id Team Builder id
+ * @return array List of of student ids => array of answers they selected
  */
 function teambuilder_get_responses($id, $student = null) {
-    global $CFG, $DB;
+    global $DB;
     $teambuilder = $DB->get_record("teambuilder", array("id" => $id));
-    if($student == null) {
-        if($teambuilder->groupid) {
-            $students = groups_get_members($teambuilder->groupid,"u.id");
+    if ($student == null) {
+        if ($teambuilder->groupid) {
+            $students = groups_get_members($teambuilder->groupid, "u.id");
         } else {
             $ctxt = context_course::instance($teambuilder->course);
             $students = get_users_by_capability($ctxt, 'mod/teambuilder:respond', 'u.id');
         }
         $responses = array();
-        foreach($students as $s) {
-            $responses[$s->id] = teambuilder_get_responses($id,$s->id);
+        foreach ($students as $s) {
+            $responses[$s->id] = teambuilder_get_responses($id, $s->id);
         }
         return $responses;
     }
@@ -193,7 +201,7 @@ function teambuilder_get_responses($id, $student = null) {
     $params = array('userid' => $student, 'builder' => $id);
     $rslt = $DB->get_records_sql($sql, $params);
     $ret = false;
-    if(!empty($rslt)) {
+    if (!empty($rslt)) {
         $ret = array_keys($rslt);
     }
     return $ret;

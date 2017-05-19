@@ -16,15 +16,17 @@
 
 /**
  * @package    mod_teambuilder
- * @copyright  2015 NetSpot Pty Ltd
- * @author     Adam Olley <adam.olley@netspot.com.au>
+ * @copyright  2017 Blackboard Inc
+ * @author     2017 Adam Olley <adam.olley@blackboard.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 
-require_once($CFG->dirroot . '/mod/teambuilder/backup/moodle2/backup_teambuilder_stepslib.php');
+defined('MOODLE_INTERNAL') || die();
+
+require_once(dirname(__FILE__) . '/backup_teambuilder_stepslib.php');
 
 /**
- * certificate backup task that provides all the settings and steps to perform one
+ * teambuilder backup task that provides all the settings and steps to perform one
  * complete backup of the activity
  */
 class backup_teambuilder_activity_task extends backup_activity_task {

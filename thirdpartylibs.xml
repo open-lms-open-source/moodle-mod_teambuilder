@@ -1,0 +1,10 @@
+<?xml version="1.0"?>
+<libraries>
+  <library>
+    <location>js/json2.js</location>
+    <name>json2.js - https://github.com/douglascrockford/JSON-js</name>
+    <license>Public Domain</license>
+    <version>2011-10-19</version>
+    <licenseversion></licenseversion>
+  </library>
+</libraries>

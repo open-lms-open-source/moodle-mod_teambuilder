@@ -16,8 +16,8 @@
 
 /**
  * @package    mod_teambuilder
- * @copyright  2015 NetSpot Pty Ltd
- * @author     Adam Olley <adam.olley@netspot.com.au>
+ * @copyright  2017 Blackboard Inc
+ * @author     2017 Adam Olley <adam.olley@blackboard.com>
  * @license    http://www.gnu.org/copyleft/gpl.html GNU GPL v3 or later
  */
 

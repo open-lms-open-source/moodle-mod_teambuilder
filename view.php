@@ -14,7 +14,7 @@
 // You should have received a copy of the GNU General Public License
 // along with Moodle.  If not, see <http://www.gnu.org/licenses/>.
 
-require_once(dirname(dirname(dirname(__FILE__))).'/config.php');
+require_once(dirname(__FILE__).'/../../config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
 $PAGE->requires->js("/mod/teambuilder/js/jquery.js");
@@ -22,8 +22,8 @@ $PAGE->requires->js("/mod/teambuilder/js/jquery.ui.js");
 $PAGE->requires->js("/mod/teambuilder/js/json2.js");
 $PAGE->requires->css('/mod/teambuilder/styles.css');
 
-$id = optional_param('id', 0, PARAM_INT); // course_module ID, or
-$a  = optional_param('a', 0, PARAM_INT);  // teambuilder instance ID
+$id = optional_param('id', 0, PARAM_INT); // The course_module ID, or...
+$a  = optional_param('a', 0, PARAM_INT);  // Teambuilder instance ID.
 $preview = optional_param('preview', 0, PARAM_INT);
 $action = optional_param('action', null, PARAM_TEXT);
 
@@ -57,49 +57,43 @@ $event->trigger();
 // Check out if we've got any submitted data.
 
 if ($action == "submit-questionnaire") {
-    $questions = teambuilder_get_questions($teambuilder->id,$USER->id);
-    if(has_capability('mod/teambuilder:respond', $ctxt)) {
-        foreach($questions as $q) {
+    $questions = teambuilder_get_questions($teambuilder->id, $USER->id);
+    if (has_capability('mod/teambuilder:respond', $ctxt)) {
+        foreach ($questions as $q) {
             if ($q->type === 'one') {
                 $response = optional_param('question-'.$q->id, 0, PARAM_RAW);
             } else {
                 $response = optional_param_array('question-'.$q->id, 0, PARAM_RAW);
             }
             // Delete all their old answers.
-            foreach($q->answers as $a) {
+            foreach ($q->answers as $a) {
                 if ($a->selected) {
                     $DB->delete_records("teambuilder_response", array("userid" => $USER->id, "answerid" => $a->id));
                 }
             }
             // Now insert their new answers.
-            if(is_array($response)) {
-                foreach($response as $r) {
+            if (is_array($response)) {
+                foreach ($response as $r) {
                     $record = new stdClass();
                     $record->userid = $USER->id;
                     $record->answerid = $r;
-                    $DB->insert_record("teambuilder_response",$record);
+                    $DB->insert_record("teambuilder_response", $record);
                 }
             } else {
                 $record = new stdClass();
                 $record->userid = $USER->id;
                 $record->answerid = $response;
-                $DB->insert_record("teambuilder_response",$record);
+                $DB->insert_record("teambuilder_response", $record);
             }
         }
         $feedback = "Your answers were submitted.";
     }
 }
 
-/// Print the page header
-$strteambuilders = get_string('modulenameplural', 'teambuilder');
-$strteambuilder  = get_string('modulename', 'teambuilder');
-
-/// Print the main part of the page
-
 $mode = 'student';
 
-if(has_capability('mod/teambuilder:create', $ctxt)) {
-    if($preview) {
+if (has_capability('mod/teambuilder:create', $ctxt)) {
+    if ($preview) {
         $mode = 'preview';
         $PAGE->requires->js("/mod/teambuilder/js/view.js");
     } else {
@@ -107,13 +101,13 @@ if(has_capability('mod/teambuilder:create', $ctxt)) {
         $PAGE->requires->js("/mod/teambuilder/js/editview.js");
     }
 } else {
-    require_capability('mod/teambuilder:respond',$ctxt);
+    require_capability('mod/teambuilder:respond', $ctxt);
     $mode = 'student';
     $PAGE->requires->js("/mod/teambuilder/js/view.js");
 }
 
 if (($mode == 'teacher') && ($teambuilder->open < time()) && !isset($_GET['f'])) {
-    redirect("build.php?id=$id");
+    redirect(new moodle_url('/mod/teambuilder/build.php', ['id' => $id]));
 }
 
 $PAGE->set_url('/mod/teambuilder/view.php', array('id' => $cm->id));
@@ -131,24 +125,19 @@ if(($mode=="student") && $teambuilder->groupid && !groups_is_member($teambuilder
 } else if(($mode=="student") && (($teambuilder->open > time()) || $teambuilder->close < time())) {
     echo '<div class="ui-widget" style="text-align:center;"><div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all"><p>This Team Builder questionnaire is not open.</p></div></div>';
 } else {
-
-    if ($mode=='teacher') {
-
-        //before we start - import the questions
+    if ($mode == 'teacher') {
+        // Before we start - import the questions.
         $import = optional_param('import', 0, PARAM_INT);
-        if ($import)
-        {
+        if ($import) {
             $questions = teambuilder_get_questions($import);
-            foreach($questions as $q)
-            {
+            foreach ($questions as $q) {
                 unset($q->id);
                 $q->builder = $teambuilder->id;
-                $newid = $DB->insert_record('teambuilder_question',$q);
-                foreach($q->answers as $a)
-                {
+                $newid = $DB->insert_record('teambuilder_question', $q);
+                foreach ($q->answers as $a) {
                     unset($a->id);
                     $a->question = $newid;
-                    $DB->insert_record('teambuilder_answer',$a);
+                    $DB->insert_record('teambuilder_answer', $a);
                 }
             }
         }
@@ -165,12 +154,12 @@ if(($mode=="student") && $teambuilder->groupid && !groups_is_member($teambuilder
                 echo '<script type="text/javascript">var interaction_disabled = true;</script>';
         }
 
-        //set up initial questions
+        // Set up initial questions.
         $questions = teambuilder_get_questions($teambuilder->id);
         echo '<script type="text/javascript"> var init_questions = ' . json_encode($questions) . '</script>';
 
         echo '<div id="questions">';
-        foreach($questions as $q) {
+        foreach ($questions as $q) {
             echo <<<HTML
 <div class="question" id="question-{$q->id}"><table>
 <tr>
@@ -183,8 +172,7 @@ if(($mode=="student") && $teambuilder->groupid && !groups_is_member($teambuilder
 <tr>
     <td class="answers" colspan="2"><ul>
 HTML;
-            foreach($q->answers as $a)
-            {
+            foreach ($q->answers as $a) {
                 echo "<li>$a->answer</li>";
             }
             echo  '</ul></td></tr></table></div>';
@@ -192,7 +180,7 @@ HTML;
 
         echo '</div>';
 
-        if($teambuilder->open > time()) {
+        if ($teambuilder->open > time()) {
 
             // New question form.
             echo <<<HTML
@@ -242,9 +230,9 @@ HTML;
 </div>
 HTML;
         }
-    } else if (($mode=="preview") || ($mode=="student")) {
-        $questions = teambuilder_get_questions($teambuilder->id,$USER->id);
-        $responses = teambuilder_get_responses($teambuilder->id,$USER->id);
+    } else if (($mode == "preview") || ($mode == "student")) {
+        $questions = teambuilder_get_questions($teambuilder->id, $USER->id);
+        $responses = teambuilder_get_responses($teambuilder->id, $USER->id);
 
         if ($mode == "preview") {
             $tabs = array();
@@ -255,7 +243,7 @@ HTML;
         }
 
         if (($mode == "student") && empty($feedback)) {
-            if($responses!==false && !$teambuilder->allowupdate) {
+            if ($responses !== false && !$teambuilder->allowupdate) {
                 $feedback = "You have already completed this questionnaire.";
             }
         }
@@ -283,7 +271,7 @@ HTML;
     <td class="answers" colspan="2">
         <div style="visibility:hidden;">
 HTML;
-                foreach($q->answers as $a) {
+                foreach ($q->answers as $a) {
                     if ($q->type == "one") {
                         $type = "radio";
                         $name = '';
@@ -311,8 +299,5 @@ HTML;
 
         }
     }
-
-} // If student and outside of open/close.
-
-/// Finish the page
+}
 echo $OUTPUT->footer();
