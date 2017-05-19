@@ -114,14 +114,21 @@ $PAGE->set_title(format_string($teambuilder->name));
 $PAGE->set_heading($course->fullname);
 $PAGE->set_cm($cm);
 $PAGE->set_context($ctxt);
-echo $OUTPUT->header();
+$output = $PAGE->get_renderer('mod_teambuilder');
+echo $output->header();
 
-//first things first: if it's not open, don't show it to students
+// First things first: if it's not open, don't show it to students.
 
-if(($mode=="student") && $teambuilder->groupid && !groups_is_member($teambuilder->groupid)) {
-    echo '<div class="ui-widget" style="text-align:center;"><div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all"><p>You do not need to complete this Team Builder questionnaire.</p></div></div>';
-} else if(($mode=="student") && (($teambuilder->open > time()) || $teambuilder->close < time())) {
-    echo '<div class="ui-widget" style="text-align:center;"><div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all"><p>This Team Builder questionnaire is not open.</p></div></div>';
+if (($mode == "student") && $teambuilder->groupid && !groups_is_member($teambuilder->groupid)) {
+    echo '<div class="ui-widget" style="text-align:center;">';
+    echo '<div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all">';
+    echo '<p>'.get_string('noneedtocomplete', 'mod_teambuilder').'</p>';
+    echo '</div></div>';
+} else if (($mode == "student") && (($teambuilder->open > time()) || $teambuilder->close < time())) {
+    echo '<div class="ui-widget" style="text-align:center;">';
+    echo '<div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all">';
+    echo '<p>'.get_string('notopen', 'mod_teambuilder').'</p>';
+    echo '</div></div>';
 } else {
     if ($mode == 'teacher') {
         // Before we start - import the questions.
@@ -140,15 +147,14 @@ if(($mode=="student") && $teambuilder->groupid && !groups_is_member($teambuilder
             }
         }
 
-        $tabs = array();
-        $tabs[] = new tabobject("questionnaire","view.php?id=$id",get_string('questionnaire','teambuilder'));
-        $tabs[] = new tabobject("preview","view.php?id=$id&preview=1",get_string('preview','teambuilder'));
-        $tabs[] = new tabobject("build","build.php?id=$id",get_string('buildteams','teambuilder'));
-        print_tabs(array($tabs), "questionnaire");
+        echo $output->navigation_tabs($id, "questionnaire");
 
-        if($teambuilder->open < time())
-        {
-                echo '<div class="ui-widget" style="text-align:center;"><div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all"><p>You cannot edit the questionnaire of a Team Builder if it has already been opened.</p></div></div>';
+        if ($teambuilder->open < time()) {
+                echo '<div class="ui-widget" style="text-align:center;">';
+                $style = "display:inline-block; padding-left:10px; padding-right:10px;";
+                echo '<div style="'.$style.'" class="ui-state-highlight ui-corner-all">';
+                echo '<p>'.get_string('noeditingafteropentime', 'mod_teambuilder').'</p>';
+                echo '</div></div>';
                 echo '<script type="text/javascript">var interaction_disabled = true;</script>';
         }
 
@@ -181,39 +187,49 @@ HTML;
         if ($teambuilder->open > time()) {
 
             // New question form.
-            echo <<<HTML
-<div style="display:none;text-align:center;" id="savingIndicator"></div>
-<div style="text-align:center;"><button type="button" id="saveQuestionnaire" onclick="saveQuestionnaire('$CFG->wwwroot/mod/teambuilder/ajax.php',$id)">Save Questionnaire</button></div>
-HTML;
+            $onclick = "saveQuestionnaire('{$CFG->wwwroot}/mod/teambuilder/ajax.php', {$id})";
+            echo '<div style="display:none;text-align:center;" id="savingIndicator"></div>';
+            echo '<div style="text-align:center;"><button type="button" id="saveQuestionnaire" onclick="'.$onclick.'">';
+            echo get_string('savequestionnaire', 'mod_teambuilder').'</button></div>';
 
             if (empty($questions)) {
                 $otherbuilders = $DB->get_records('teambuilder', array('course' => $course->id));
-                echo '<div style="text-align:center;margin:10px;font-weight:bold;" id="importContainer">Import questions from: <select id="importer">';
-                foreach($otherbuilders as $o) {
+                $strimport = get_string('importquestionsfrom', 'mod_teambuilder');
+                echo '<div style="text-align:center;margin:10px;font-weight:bold;" id="importContainer">';
+                echo $strimport.': <select id="importer">';
+                foreach ($otherbuilders as $o) {
                     echo "<option value=\"$o->id\">$o->name</option>";
                 }
                 echo '</select><button type="button" id="importButton">Import</button><br/>OR</div>';
             }
 
+            $straddanewquestion = get_string('addanewquestion', 'mod_teambuilder');
+            $straddnewquestion = get_string('addnewquestion', 'mod_teambuilder');
+            $strquestion = get_string('question');
+            $stranswertype = get_string('answertype', 'mod_teambuilder');
+            $stranswers = get_string('answers', 'mod_teambuilder');
+            $strselectone = get_string('selectone', 'mod_teambuilder');
+            $strselectany = get_string('selectany', 'mod_teambuilder');
+            $strselectatleastone = get_string('selectatleastone', 'mod_teambuilder');
             echo <<<HTML
-<div style="text-align:center;font-weight:bold;margin:10px;">Add a new question</div>
+<div style="text-align:center;font-weight:bold;margin:10px;">$straddanewquestion</div>
 <div style="text-align:center;">
 <div id="newQuestionForm">
     <table>
         <tr>
-            <th scope="row">Question</th>
+            <th scope="row">$strquestion</th>
             <td><input name="question" type="text" class="text" /></td>
         </tr>
         <tr>
-            <th scope="row">Answer type</th>
+            <th scope="row">$stranswertype</th>
             <td><select>
-                <option value="one">Select one</option>
-                <option value="any">Select any (or none)</option>
-                <option value="atleastone">Select one or more</option>
+                <option value="one">$strselectone</option>
+                <option value="any">$strselectany</option>
+                <option value="atleastone">$strselectatleastone</option>
             </select></td>
         </tr>
         <tr>
-            <th scope="row">Answers</th>
+            <th scope="row">$stranswers</th>
             <td id="answerSection"><input type="text" name="answers[]" class="text" /><br/>
                 <button onclick="addNewAnswer();" type="button">+</button>
                 <button onclick="removeLastAnswer();" type="button">-</button>
@@ -221,7 +237,7 @@ HTML;
         </tr>
         <tr>
             <td></td>
-            <td><button id="addNewQuestion" type="button" onclick="addNewQuestion();">Add New Question</button></td>
+            <td><button id="addNewQuestion" type="button" onclick="addNewQuestion();">$straddnewquestion</button></td>
         </tr>
     </table>
 </div>
@@ -233,11 +249,7 @@ HTML;
         $responses = teambuilder_get_responses($teambuilder->id, $USER->id);
 
         if ($mode == "preview") {
-            $tabs = array();
-            $tabs[] = new tabobject("questionnaire","view.php?id=$id&f=1",get_string('questionnaire','teambuilder'));
-            $tabs[] = new tabobject("preview","view.php?id=$id&preview=1",get_string('preview','teambuilder'));
-            $tabs[] = new tabobject("build","build.php?id=$id",get_string('buildteams','teambuilder'));
-            print_tabs(array($tabs), "preview");
+            echo $output->navigation_tabs($id, "preview");
         }
 
         if (($mode == "student") && empty($feedback)) {
@@ -247,7 +259,11 @@ HTML;
         }
 
         if (isset($feedback) && $feedback) {
-            echo '<div class="ui-widget" style="text-align:center;"><div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all"><p>'.$feedback.'</p></div></div>';
+            echo '<div class="ui-widget centered">';
+            $style = 'display:inline-block; padding-left:10px; padding-right:10px;';
+            echo '<div style="'.$style.'" class="ui-state-highlight ui-corner-all">';
+            echo '<p>'.$feedback.'</p>';
+            echo '</div></div>';
         }
 
         if (!empty($teambuilder->intro)) {
@@ -258,8 +274,12 @@ HTML;
             $preview = $mode == "preview" ? "&preview=1" : "";
             echo '<form onsubmit="return validateForm(this)" action="view.php?id='.$id.$preview.'" method="POST">';
 
-            $displaytypes = array("one" => "Select <strong>one</strong> of the following:", "any" => "Select any (or none) of the following:", "atleastone" => "Select <strong>at least one</strong> of the following:");
-            foreach($questions as $q) {
+            $displaytypes = [
+                "one" => "Select <strong>one</strong> of the following:",
+                "any" => "Select any (or none) of the following:",
+                "atleastone" => "Select <strong>at least one</strong> of the following:",
+            ];
+            foreach ($questions as $q) {
                 echo <<<HTML
 <div class="question" id="question-{$q->id}"><table>
 <tr>
@@ -279,7 +299,9 @@ HTML;
                     }
                     $checked = $a->selected ? 'checked="checked"' : "";
                     $class = $q->type == "atleastone" ? 'class="atleastone"' : "";
-                    echo "<label><input type=\"$type\" name=\"question-$q->id$name\" value=\"$a->id\" $class $checked />$a->answer</label>";
+                    $input = html_writer::empty_tag('input',
+                        ['type' => $type, 'name' => "question-{$q->id}{$name}", 'value' => $a->id]);
+                    echo html_writer::label($input.$a->answer, null);
                 }
                 echo <<<HTML
         </div>

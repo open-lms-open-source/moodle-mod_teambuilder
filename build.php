@@ -71,10 +71,11 @@ $PAGE->set_cm($cm);
 $PAGE->set_context($ctxt);
 $PAGE->set_title($teambuilder->name);
 $PAGE->set_heading($course->fullname);
-echo $OUTPUT->header();
 
-if(!is_null($action) && $action == "create-groups")
-{
+$output = $PAGE->get_renderer('mod_teambuilder');
+echo $output->header();
+
+if (!is_null($action) && $action == "create-groups") {
     if (!$nogrouping) {
         if (strlen($groupingname) > 0) {
             $data = new stdClass();
@@ -123,56 +124,96 @@ if(!is_null($action) && $action == "create-groups")
     echo '</script>';
 }
 
-$tabs = array();
-$tabs[] = new tabobject("questionnaire","view.php?f=1&id=$id",get_string('questionnaire','teambuilder'));
-$tabs[] = new tabobject("preview","view.php?id=$id&preview=1",get_string('preview','teambuilder'));
-$tabs[] = new tabobject("build","build.php?id=$id",get_string('buildteams','teambuilder'));
-print_tabs(array($tabs), "build");
+echo $output->navigation_tabs($id, "build");
 
-if(!empty($feedback)):
-    echo '<div class="ui-widget" style="text-align:center;"><div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all"><p>'.$feedback.'</p></div></div>';
-else:
+if (!empty($feedback)) {
+    echo '<div class="ui-widget" style="text-align:center;">';
+    echo '<div style="display:inline-block; padding-left:10px; padding-right:10px;" class="ui-state-highlight ui-corner-all">';
+    echo '<p>'.$feedback.'</p>';
+    echo '</div></div>';
+} else {
+    echo html_writer::div(null, '', ['id' => 'predicate']);
 
-echo <<<HTML
-<div id="predicate">
-</div>
-<div style="text-align:center;margin:10px;"><button type="button" onclick="addNewCriterion();">Add New Criterion</button>&nbsp;<button type="button" onclick="buildTeams();"><strong>Build Teams</strong></button>&nbsp;<button type="button" onclick="resetTeams();">Reset Teams</button></div>
-<div style="text-align:center;margin:10px;">Number of teams: <span class="stepper">2</span></div>
-<div style="text-align:center;">Prioritize: <select id="prioritise"><option value="numbers" selected="selected">equal team numbers</option><option value="criteria">most criteria met</option></select></div>
-<div id="unassigned"><h2>Unassigned to teams</h2><button type="button" onclick="assignRandomly();">Assign Randomly</button><div class="sortable">
-HTML;
+    $buttons = [
+        html_writer::tag('button',
+            get_string('addnewcriterion', 'mod_teambuilder'), ['type' => 'button', 'onclick' => 'addNewCriterion();']),
+        html_writer::tag('button',
+            html_writer::tag('strong', get_string('buildteams', 'mod_teambuilder')),
+            ['type' => 'button', 'onclick' => 'buildTeams();']),
+        html_writer::tag('button',
+            get_string('resetteams', 'mod_teambuilder'), ['type' => 'button', 'onclick' => 'resetTeams();']),
+    ];
+    echo html_writer::div(implode('&nbsp;', $buttons), 'centered padded');
 
-foreach($students as $s)
-{
-    $answeredstate = !isset($responses[$s->id]) || empty($responses[$s->id]) ? 'unanswered' : 'answered';
-    echo "<div id=\"student-$s->id\" class=\"student ui-state-default $answeredstate\">$s->firstname&nbsp;$s->lastname</div>";
-}
+    $stepper = html_writer::span(2, 'stepper');
+    echo html_writer::div(get_string('numberofteams', 'mod_teambuilder').': '.$stepper, 'centered padded');
 
-$groupings = "";
-foreach(groups_get_all_groupings($course->id) as $grping)
-{
-    $groupings .= "<option value=\"$grping->id\">$grping->name</option>";
-}
+    $options = [
+        'numbers' => get_string('prioritizeequal', 'mod_teambuilder'),
+        'criteria' => get_string('prioritizemostcriteria', 'mod_teambuilder'),
+    ];
+    $select = html_writer::select($options, null, '', null, ['id' => 'prioritise']);
+    echo html_writer::div(get_string('prioritize', 'mod_teambuilder').': '.$select, 'centered');
 
-echo <<<HTML
+    $unassignedheading = html_writer::tag('h2', get_string('unassignedtoteams', 'mod_teambuilder'));
+    $unassignedbutton = html_writer::tag('button',
+        get_string('assignrandomly', 'mod_teambuilder'), ['type' => 'button', 'onclick' => 'assignRandomly();']);
+    echo html_writer::start_div('', ['id' => 'unassigned']);
+    echo $unassignedheading.$unassignedbutton;
+    echo html_writer::start_div('sortable');
+
+    foreach ($students as $s) {
+        $answeredstate = !isset($responses[$s->id]) || empty($responses[$s->id]) ? 'unanswered' : 'answered';
+        echo "<div id=\"student-$s->id\" class=\"student ui-state-default $answeredstate\">$s->firstname&nbsp;$s->lastname</div>";
+    }
+
+    $groupings = "";
+    foreach (groups_get_all_groupings($course->id) as $grping) {
+        $groupings .= "<option value=\"$grping->id\">$grping->name</option>";
+    }
+
+    $strcreategroups = get_string('creategroups', 'mod_teambuilder');
+    $strgroupingname = get_string('groupingname', 'group');
+    $straddtogrouping = get_string('addtogrouping', 'mod_teambuilder');
+    $strconfirmgroupbuilding = get_string('confirmgroupbuilding', 'mod_teambuilder');
+    $strprefixteamnames = get_string('prefixteamnames', 'mod_teambuilder');
+    $strdontassigngrouptogrouping = get_string('dontassigngrouptogrouping', 'mod_teambuilder');
+    $strcancel = get_string('cancel');
+    $strok = get_string('ok');
+
+    echo <<<HTML
 </div></div><div id="teams"></div>
 <div style="text-align:center;margin:15px 50px 0px;border-top:1px solid black;padding-top:15px;">
-    <button type="button" onclick="$('#createGroupsForm').slideDown(300);" style="font-size:1.5em;font-weight:bold;">Create Groups</button>
-    <div style="display:none" id="createGroupsForm"><p>Are you sure you want to create your groups now? This action cannot be undone.</p>
+    <button type="button" onclick="$('#createGroupsForm').slideDown(300);" class="creategroups">$strcreategroups</button>
+    <div style="display:none" id="createGroupsForm"><p>$strconfirmgroupbuilding</p>
         <table style="margin:auto;">
-            <tr><th scope="row"><label for="groupingName">Grouping Name</label></th><td><input type="text" id="groupingName"></td></tr>
+            <tr>
+                <th scope="row"><label for="groupingName">$strgroupingname</label></th>
+                <td><input type="text" id="groupingName"></td>
+            </tr>
             <tr><td colspan="2" style="text-align:center;font-size:0.8em">or...</td></tr>
-            <tr><th scope="row"><label for="groupingSelect">Add To Grouping</label></th><td><select id="groupingSelect">$groupings</select></td></tr>
-            <tr><th scope="row"><label for="inheritGroupingName">Prefix Team Names with Grouping Name</label></th><td style="text-align:left;"><input type="checkbox" checked="checked" name="inheritGroupingName" id="inheritGroupingName" value="1" /></td></tr>
+            <tr>
+                <th scope="row"><label for="groupingSelect">$straddtogrouping</label></th>
+                <td><select id="groupingSelect">$groupings</select></td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="inheritGroupingName">$strprefixteamnames</label></th>
+                <td style="text-align:left;">
+                    <input type="checkbox" checked="checked" name="inheritGroupingName" id="inheritGroupingName" value="1" />
+                </td>
+            </tr>
             <tr><td colspan="2" style="text-align:center;font-size:0.8em">or...</td></tr>
-            <tr><th scope="row"><label for="nogrouping">Don't assign groups to a Grouping</label></th><td style="text-align:left;"><input type="checkbox" name="nogrouping" id="nogrouping" value="1" /></td></tr>
+            <tr>
+                <th scope="row"><label for="nogrouping">$strdontassigngrouptogrouping</label></th>
+                <td style="text-align:left;"><input type="checkbox" name="nogrouping" id="nogrouping" value="1" /></td>
+            </tr>
         </table>
-        <button type="button" onclick="$('#createGroupsForm').slideUp(300);">Cancel</button>&nbsp;<button type="button" onclick="createGroups();">OK</button>
+        <button type="button" onclick="$('#createGroupsForm').slideUp(300);">$strcancel</button>&nbsp
+        <button type="button" onclick="createGroups();">$strok</button>
     </div>
 </div>
 <div id="debug"></div>
 HTML;
-
-endif; //if($feedback)
+}
 
 echo $OUTPUT->footer();
