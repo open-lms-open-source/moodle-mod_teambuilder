@@ -74,7 +74,6 @@ $PAGE->set_cm($cm);
 $PAGE->set_context($ctxt);
 $PAGE->set_title($teambuilder->name);
 $PAGE->set_heading($course->fullname);
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'teambuilder'));
 $PAGE->requires->css('/mod/teambuilder/css/custom-theme/jquery.ui.css');
 echo $OUTPUT->header();
 

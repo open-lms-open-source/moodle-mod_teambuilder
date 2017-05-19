@@ -122,7 +122,6 @@ $PAGE->set_heading($course->fullname);
 $PAGE->requires->css('/mod/teambuilder/css/custom-theme/jquery.ui.css');
 $PAGE->set_cm($cm);
 $PAGE->set_context($ctxt);
-$PAGE->set_button($OUTPUT->update_module_button($cm->id, 'teambuilder'));
 echo $OUTPUT->header();
 
 //first things first: if it's not open, don't show it to students
