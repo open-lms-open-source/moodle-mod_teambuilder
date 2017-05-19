@@ -46,31 +46,14 @@ $teams = optional_param_array('teams', array(), PARAM_RAW);
 $teamnames = optional_param_array('teamnames', array(), PARAM_TEXT);
 
 if ($id) {
-    if (! $cm = get_coursemodule_from_id('teambuilder', $id)) {
-        print_error('Course Module ID was incorrect');
-    }
-
-    if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
-        print_error('Course is misconfigured');
-    }
-
-    if (! $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance))) {
-        print_error('Course module is incorrect');
-    }
-
-} else if ($a) {
-    if (! $teambuilder = $DB->get_record('teambuilder', array('id' => $a))) {
-        print_error('Course module is incorrect');
-    }
-    if (! $course = $DB->get_record('course', array('id' => $teambuilder->course))) {
-        print_error('Course is misconfigured');
-    }
-    if (! $cm = get_coursemodule_from_instance('teambuilder', $teambuilder->id, $course->id)) {
-        print_error('Course Module ID was incorrect');
-    }
-
+    list ($course, $cm) = get_course_and_cm_from_cmid($id, 'teambuilder');
+    $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance), '*', MUST_EXIST);
 } else {
-    print_error('You must specify a course_module ID or an instance ID');
+    if (!$teambuilder = $DB->get_record('teambuilder', array('id' => $a), '*', MUST_EXIST)) {
+        print_error('You must specify a course_module ID or an instance ID');
+    }
+    list ($course, $cm) = get_course_and_cm_from_instance($teambuilder, 'teambuilder');
+    $id = $cm->id;
 }
 
 require_login($course, true, $cm);

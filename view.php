@@ -28,16 +28,14 @@ $preview = optional_param('preview', 0, PARAM_INT);
 $action = optional_param('action', null, PARAM_TEXT);
 
 if ($id) {
-    $cm = get_coursemodule_from_id('teambuilder', $id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
+    list ($course, $cm) = get_course_and_cm_from_cmid($id, 'teambuilder');
     $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance), '*', MUST_EXIST);
-} else if ($a) {
-    $teambuilder = $DB->get_record('teambuilder', array('id' => $a), '*', MUST_EXIST);
-    $cm = get_coursemodule_from_instance('teambuilder', $teambuilder->id, 0, false, MUST_EXIST);
-    $course = $DB->get_record('course', array('id' => $cm->course), '*', MUST_EXIST);
-    $id = $cm->id;
 } else {
-    print_error('You must specify a course_module ID or an instance ID');
+    if (!$teambuilder = $DB->get_record('teambuilder', array('id' => $a), '*', MUST_EXIST)) {
+        print_error('You must specify a course_module ID or an instance ID');
+    }
+    list ($course, $cm) = get_course_and_cm_from_instance($teambuilder, 'teambuilder');
+    $id = $cm->id;
 }
 
 require_login($course, true, $cm);

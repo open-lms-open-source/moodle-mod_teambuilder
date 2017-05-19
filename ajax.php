@@ -24,20 +24,15 @@ $input = json_decode(stripslashes($input));
 
 $output = array();
 
-if (! $cm = get_coursemodule_from_id('teambuilder', $id)) {
+try {
+    list ($course, $cm) = get_course_and_cm_from_cmid($id, 'teambuilder');
+    $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance), '*', MUST_EXIST);
+} catch (Exception $e) {
     $output['status'] = 'fail';
-    $output['message'] = 'Course Module ID was incorrect';
+    $output['message'] = 'Course Module ID was incorrect or is misconfigured';
 }
 
-if (! $course = $DB->get_record('course', array('id' => $cm->course))) {
-    $output['status'] = 'fail';
-    $output['message'] ='Course is misconfigured';
-}
-
-if (! $teambuilder = $DB->get_record('teambuilder', array('id' => $cm->instance))) {
-    $output['status'] = 'fail';
-    $output['message'] ='Course module is incorrect';
-}
+require_login($course, true, $cm);
 
 // Alright.
 
