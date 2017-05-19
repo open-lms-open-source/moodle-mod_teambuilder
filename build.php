@@ -27,8 +27,9 @@ require_once(dirname(__FILE__).'/../../config.php');
 require_once(dirname(__FILE__).'/lib.php');
 require_once($CFG->dirroot.'/group/lib.php');
 
-$PAGE->requires->js("/mod/teambuilder/js/jquery.js");
-$PAGE->requires->js("/mod/teambuilder/js/jquery.ui.js");
+$PAGE->requires->jquery();
+$PAGE->requires->jquery_plugin('ui');
+$PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->js("/mod/teambuilder/js/json2.js");
 $PAGE->requires->js("/mod/teambuilder/js/build.js");
 $PAGE->requires->css('/mod/teambuilder/styles.css');
@@ -70,7 +71,6 @@ $PAGE->set_cm($cm);
 $PAGE->set_context($ctxt);
 $PAGE->set_title($teambuilder->name);
 $PAGE->set_heading($course->fullname);
-$PAGE->requires->css('/mod/teambuilder/css/custom-theme/jquery.ui.css');
 echo $OUTPUT->header();
 
 if(!is_null($action) && $action == "create-groups")

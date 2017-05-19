@@ -17,8 +17,9 @@
 require_once(dirname(__FILE__).'/../../config.php');
 require_once(dirname(__FILE__).'/lib.php');
 
-$PAGE->requires->js("/mod/teambuilder/js/jquery.js");
-$PAGE->requires->js("/mod/teambuilder/js/jquery.ui.js");
+$PAGE->requires->jquery();
+$PAGE->requires->jquery_plugin('ui');
+$PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->js("/mod/teambuilder/js/json2.js");
 $PAGE->requires->css('/mod/teambuilder/styles.css');
 
@@ -111,7 +112,6 @@ if (($mode == 'teacher') && ($teambuilder->open < time()) && !isset($_GET['f']))
 $PAGE->set_url('/mod/teambuilder/view.php', array('id' => $cm->id));
 $PAGE->set_title(format_string($teambuilder->name));
 $PAGE->set_heading($course->fullname);
-$PAGE->requires->css('/mod/teambuilder/css/custom-theme/jquery.ui.css');
 $PAGE->set_cm($cm);
 $PAGE->set_context($ctxt);
 echo $OUTPUT->header();
