@@ -53,7 +53,7 @@ class mod_teambuilder_mod_form extends moodleform_mod {
         // or adding more fieldsets ('header' elements) if needed for better logic.
 
         $groups = groups_get_all_groups($COURSE->id);
-        $options[0] = 'All Students';
+        $options[0] = get_string('allstudents', 'mod_teambuilder');
         foreach ($groups as $group) {
             $options[$group->id] = $group->name;
         }

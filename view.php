@@ -194,13 +194,15 @@ HTML;
 
             if (empty($questions)) {
                 $otherbuilders = $DB->get_records('teambuilder', array('course' => $course->id));
-                $strimport = get_string('importquestionsfrom', 'mod_teambuilder');
+                $strimportfrom = get_string('importquestionsfrom', 'mod_teambuilder');
                 echo '<div style="text-align:center;margin:10px;font-weight:bold;" id="importContainer">';
-                echo $strimport.': <select id="importer">';
+                echo $strimportfrom.': <select id="importer">';
                 foreach ($otherbuilders as $o) {
                     echo "<option value=\"$o->id\">$o->name</option>";
                 }
-                echo '</select><button type="button" id="importButton">Import</button><br/>OR</div>';
+                $strimport = get_string('import', 'mod_teambuilder');
+                $stror = get_string('or', 'mod_teambuilder');
+                echo '</select><button type="button" id="importButton">'.$strimport.'</button><br/>'.$stror.'</div>';
             }
 
             $straddanewquestion = get_string('addanewquestion', 'mod_teambuilder');
