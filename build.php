@@ -31,7 +31,7 @@ $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->js("/mod/teambuilder/js/json2.js");
-$PAGE->requires->js("/mod/teambuilder/js/build.js");
+$PAGE->requires->js_call_amd('mod_teambuilder/build', 'init');
 $PAGE->requires->css('/mod/teambuilder/styles.css');
 
 $id = optional_param('id', 0, PARAM_INT); // The course_module ID, or...
@@ -139,12 +139,12 @@ if (!empty($feedback)) {
 
     $buttons = [
         html_writer::tag('button',
-            get_string('addnewcriterion', 'mod_teambuilder'), ['type' => 'button', 'onclick' => 'addNewCriterion();']),
+            get_string('addnewcriterion', 'mod_teambuilder'), ['type' => 'button', 'id' => 'addnewcriterion']),
         html_writer::tag('button',
             html_writer::tag('strong', get_string('buildteams', 'mod_teambuilder')),
-            ['type' => 'button', 'onclick' => 'buildTeams();']),
+            ['type' => 'button', 'id' => 'buildteams']),
         html_writer::tag('button',
-            get_string('resetteams', 'mod_teambuilder'), ['type' => 'button', 'onclick' => 'resetTeams();']),
+            get_string('resetteams', 'mod_teambuilder'), ['type' => 'button', 'id' => 'resetteams']),
     ];
     echo html_writer::div(implode('&nbsp;', $buttons), 'centered padded');
 
@@ -160,7 +160,7 @@ if (!empty($feedback)) {
 
     $unassignedheading = html_writer::tag('h2', get_string('unassignedtoteams', 'mod_teambuilder'));
     $unassignedbutton = html_writer::tag('button',
-        get_string('assignrandomly', 'mod_teambuilder'), ['type' => 'button', 'onclick' => 'assignRandomly();']);
+        get_string('assignrandomly', 'mod_teambuilder'), ['type' => 'button', 'id' => 'assignrandomly']);
     echo html_writer::start_div('', ['id' => 'unassigned']);
     echo $unassignedheading.$unassignedbutton;
     echo html_writer::start_div('sortable');
@@ -212,7 +212,7 @@ if (!empty($feedback)) {
             </tr>
         </table>
         <button type="button" onclick="$('#createGroupsForm').slideUp(300);">$strcancel</button>&nbsp
-        <button type="button" onclick="createGroups();">$strok</button>
+        <button type="button" id="creategroups">$strok</button>
     </div>
 </div>
 <div id="debug"></div>
