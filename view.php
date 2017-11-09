@@ -299,10 +299,12 @@ HTML;
                         $type = "checkbox";
                         $name = "[]";
                     }
-                    $checked = $a->selected ? 'checked="checked"' : "";
-                    $class = $q->type == "atleastone" ? 'class="atleastone"' : "";
-                    $input = html_writer::empty_tag('input',
-                        ['type' => $type, 'name' => "question-{$q->id}{$name}", 'value' => $a->id]);
+                    $class = $q->type == "atleastone" ? "atleastone" : "";
+                    $inputarr = ['type' => $type, 'name' => "question-{$q->id}{$name}", 'value' => $a->id, 'class' => $class];
+                    if ($a->selected) {
+                        $inputarr['checked'] = 'checked';
+                    }
+                    $input = html_writer::empty_tag('input', $inputarr);
                     echo html_writer::label($input.$a->answer, null);
                 }
                 echo <<<HTML
