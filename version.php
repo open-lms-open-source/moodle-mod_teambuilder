@@ -16,9 +16,9 @@
 
 defined('MOODLE_INTERNAL') || die();
 
-$plugin->version = 2017051900;
+$plugin->version = 2017110900;
 $plugin->requires = 2015051100;
 $plugin->component = 'mod_teambuilder';
 $plugin->maturity = MATURITY_STABLE;
 $plugin->cron = 0;
-$plugin->release = '2.9.0.0';
+$plugin->release = '2.9.0.1';
