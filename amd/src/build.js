@@ -95,7 +95,7 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
             $(this).width(maxwidth);
         });
 
-        $(".student").on("mouseup", function (evt) {
+        $("#unassigned, #teams").on("mouseup", ".student", function (evt) {
             if (preventStudentClick) {
                 preventStudentClick = false;
                 return;
@@ -159,7 +159,7 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
 
         });
 
-        $(".team > h2").on("dblclick", function (evt) {
+        $("#teams").on("dblclick", ".team > h2", function (evt) {
             var teamHeader = $(evt.target);
             var teamName = teamHeader.html();
             var teamTextBox = $('<input type="text" value="' + teamName + '" />');
