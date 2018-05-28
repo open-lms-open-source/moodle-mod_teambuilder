@@ -604,15 +604,15 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
                     var lowestTeams = [];
 
                     // Skip the 0th team since otherwise we compare it to itself.
-                    for (i = 1; i < teamAssignments.length; i++) {
-                        t = teamAssignments[i];
+                    for (j = 1; j < teamAssignments.length; j++) {
+                        t = teamAssignments[j];
                         lt = teamAssignments[lowestTeam];
 
                         if (t.length < lt.length) {
-                            lowestTeam = i;
+                            lowestTeam = j;
                             lowestTeams = [];
                         } else if (t.length == lt.length) {
-                            lowestTeams.push(i);
+                            lowestTeams.push(j);
                         }
                     }
                     lowestTeams.push(lowestTeam);
@@ -721,12 +721,13 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
     };
 
     var studentMeetsCriterion = function(student, criterion) {
-        sr = responses[student]; // Student responses.
+        var sr = responses[student]; // Student responses.
         if (sr === false) {
             return false; // Students without a response cannot meet a criterion.
         }
 
         var ret; // Return value.
+        var ans, sc;
 
         if (criterion.oper == "any") {
             ret = false;
@@ -851,7 +852,7 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
         var ret = [];
         var array = inArray.slice(0);
         for (i = array.length; i > 0; i--) {
-            index = Math.floor(Math.random() * i);
+            var index = Math.floor(Math.random() * i);
             ret.push(array[index]);
             array.splice(index, 1);
         }
