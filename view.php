@@ -90,20 +90,18 @@ if ($action == "submit-questionnaire") {
 }
 
 $mode = 'student';
-
+$script = 'view';
 if (has_capability('mod/teambuilder:create', $ctxt)) {
     if ($preview) {
         $mode = 'preview';
-        $PAGE->requires->js("/mod/teambuilder/js/view.js");
     } else {
         $mode = 'teacher';
-        $PAGE->requires->js_call_amd('mod_teambuilder/editview', 'init');
+        $script = 'editview';
     }
 } else {
     require_capability('mod/teambuilder:respond', $ctxt);
-    $mode = 'student';
-    $PAGE->requires->js("/mod/teambuilder/js/view.js");
 }
+$PAGE->requires->js_call_amd('mod_teambuilder/'.$script, 'init');
 
 if (($mode == 'teacher') && ($teambuilder->open < time()) && !isset($_GET['f'])) {
     redirect(new moodle_url('/mod/teambuilder/build.php', ['id' => $id]));
@@ -278,7 +276,7 @@ HTML;
 
         if (!$responses || $teambuilder->allowupdate) {
             $preview = $mode == "preview" ? "&preview=1" : "";
-            echo '<form onsubmit="return validateForm(this)" action="view.php?id='.$id.$preview.'" method="POST">';
+            echo '<form id="questionnaireform" action="view.php?id='.$id.$preview.'" method="POST">';
 
             $displaytypes = [
                 "one" => get_string('selectoneresponse', 'mod_teambuilder'),
