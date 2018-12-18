@@ -21,6 +21,7 @@ $PAGE->requires->jquery();
 $PAGE->requires->jquery_plugin('ui');
 $PAGE->requires->jquery_plugin('ui-css');
 $PAGE->requires->js("/mod/teambuilder/js/json2.js");
+$PAGE->requires->js("/mod/teambuilder/js/jquery.ui.touch-punch.min.js");
 $PAGE->requires->css('/mod/teambuilder/styles.css');
 
 $id = optional_param('id', 0, PARAM_INT); // The course_module ID, or...
@@ -326,4 +327,16 @@ HTML;
         }
     }
 }
+
+// Call outside of AMD function to ensure question is rendered and accessible.
+echo <<<HTML
+<script>
+$(function() {
+  $( "#questions" ).sortable({handle : '.handle', axis : 'y'});
+  $( "#questions .answers ul").sortable({axis : 'y'}).find("li").css("cursor","default");
+  $( "#questions" ).disableSelection();
+});
+</script>
+HTML;
+
 echo $OUTPUT->footer();

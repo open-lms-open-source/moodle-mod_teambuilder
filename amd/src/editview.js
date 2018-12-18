@@ -145,8 +145,7 @@ define(['jquery', 'jqueryui', 'core/config', 'core/str', 'core/notification'], f
             $("#question-" + i).data("question", init_questions[i]);
         }
         if (interaction_disabled == false) {
-            $("#questions").sortable({handle : '.handle', axis : 'y'});
-            $("#questions .answers ul").sortable({axis : 'y'}).find("li").css("cursor","default");
+            // Move outside of AMD function to ensure question is rendered and accessible.
 
             $("#answerSection input").on('keydown', function(evt) {
                 if ((evt.which == 13) && !(evt.metaKey || evt.ctrlKey)) {
