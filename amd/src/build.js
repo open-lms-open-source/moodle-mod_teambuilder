@@ -159,7 +159,7 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
 
         });
 
-        $("#teams").on("dblclick", ".team > h2", function (evt) {
+        $("#teams").on("click", ".team > h2", function (evt) {
             var teamHeader = $(evt.target);
             var teamName = teamHeader.html();
             var teamTextBox = $('<input type="text" value="' + teamName + '" />');
@@ -292,6 +292,8 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
             if (questions[this.value]['type'] == 'one') {
                 $(this).next(".oper").children("[value='all']").remove();
             } else {
+                // To prevent duplicates, remove all instances of 'all' then add back in.
+                $(this).next(".oper").children("[value='all']").remove();
                 $(this).nextAll(".oper:first").children("[value='none']").before('<option value="all">all</option>');
             }
         });
@@ -425,7 +427,7 @@ define(['jquery', 'jqueryui', 'core/str'], function($, jqui, str) {
                 }
             }
         }
-
+        $('#assignrandomly').on('click', assignRandomly);
     };
 
     var getCriterionObjectFromView = function(view) {
