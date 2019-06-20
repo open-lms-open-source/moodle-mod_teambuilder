@@ -25,9 +25,11 @@ namespace mod_teambuilder\privacy;
 
 use core_privacy\local\metadata\collection;
 use core_privacy\local\request\approved_contextlist;
+use core_privacy\local\request\approved_userlist;
 use core_privacy\local\request\contextlist;
 use core_privacy\local\request\deletion_criteria;
 use core_privacy\local\request\helper;
+use core_privacy\local\request\userlist;
 use core_privacy\local\request\writer;
 
 defined('MOODLE_INTERNAL') || die();
@@ -40,12 +42,10 @@ defined('MOODLE_INTERNAL') || die();
 class provider implements
     // This plugin stores personal data.
     \core_privacy\local\metadata\provider,
+    \core_privacy\local\request\core_userlist_provider,
 
     // This plugin is a core_user_data_provider.
     \core_privacy\local\request\plugin\provider {
-
-    // This trait must be included.
-    use \core_privacy\local\legacy_polyfill;
 
     /**
      * Return the fields which contain personal data.
@@ -53,7 +53,7 @@ class provider implements
      * @param collection $items a reference to the collection to use to store the metadata.
      * @return collection the updated collection of metadata items.
      */
-    public static function _get_metadata(collection $items) {
+    public static function get_metadata(collection $items) {
         $items->add_database_table(
             'teambuilder_response',
             [
@@ -72,7 +72,7 @@ class provider implements
      * @param int $userid the userid.
      * @return contextlist the list of contexts containing user info for the user.
      */
-    public static function _get_contexts_for_userid($userid) {
+    public static function get_contexts_for_userid($userid) {
         // Fetch all teambuilder responses.
         $sql = "SELECT c.id
                 FROM {context} c
@@ -96,11 +96,41 @@ class provider implements
     }
 
     /**
+     * Get the list of users who have data within a context.
+     *
+     * @param userlist $userlist The userlist containing the list of users who have data in this context/plugin combination.
+     *
+     */
+    public static function get_users_in_context(userlist $userlist) {
+        $context = $userlist->get_context();
+
+        if (!is_a($context, \context_module::class)) {
+            return;
+        }
+
+        $sql = "SELECT r.userid
+                FROM {course_modules} cm
+                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
+                JOIN {teambuilder} t ON t.id = cm.instance
+                JOIN {teambuilder_question} q ON q.builder = t.id
+                JOIN {teambuilder_answer} a ON a.question = q.id
+                JOIN {teambuilder_response} r ON r.answerid = a.id
+                WHERE cm.id = :instanceid";
+
+        $params = [
+            'modname'       => 'teambuilder',
+            'instanceid'    => $context->instanceid,
+        ];
+
+        $userlist->add_from_sql('userid', $sql, $params);
+    }
+
+    /**
      * Export personal data for the given approved_contextlist. User and context information is contained within the contextlist.
      *
      * @param approved_contextlist $contextlist a list of contexts approved for export.
      */
-    public static function _export_user_data(approved_contextlist $contextlist) {
+    public static function export_user_data(approved_contextlist $contextlist) {
         global $DB;
 
         if (empty($contextlist->count())) {
@@ -116,7 +146,7 @@ class provider implements
                        a.answer
                 FROM {context} c
                 JOIN {course_modules} cm ON cm.id = c.instanceid AND c.contextlevel = :contextlevel
-                JOIN {modules} m ON m.id = cm.module
+                JOIN {modules} m ON m.id = cm.module AND m.name = :modname
                 JOIN {teambuilder} t ON t.id = cm.instance
                 JOIN {teambuilder_question} q ON q.builder = t.id
                 JOIN {teambuilder_answer} a ON a.question = q.id
@@ -125,7 +155,7 @@ class provider implements
                   AND r.userid = :userid
                 ORDER BY cm.id";
 
-        $params = ['userid' => $user->id, 'contextlevel' => CONTEXT_MODULE] + $contextparams;
+        $params = ['userid' => $user->id, 'contextlevel' => CONTEXT_MODULE, 'modname' => 'teambuilder',] + $contextparams;
 
         $lastcmid = null;
 
@@ -177,7 +207,7 @@ class provider implements
      *
      * @param \context $context the context to delete in.
      */
-    public static function _delete_data_for_all_users_in_context(\context $context) {
+    public static function delete_data_for_all_users_in_context(\context $context) {
         global $DB;
 
         if (empty($context)) {
@@ -204,7 +234,7 @@ class provider implements
      *
      * @param approved_contextlist $contextlist a list of contexts approved for deletion.
      */
-    public static function _delete_data_for_user(approved_contextlist $contextlist) {
+    public static function delete_data_for_user(approved_contextlist $contextlist) {
         global $DB;
 
         if (empty($contextlist->count())) {
@@ -216,7 +246,7 @@ class provider implements
             if (!$context instanceof \context_module) {
                 continue;
             }
-            $instanceid = $DB->get_field('course_modules', 'instance', ['id' => $context->instanceid], MUST_EXIST);
+            $instanceid = self::get_teambuilder_id_from_context($context);
             $DB->delete_records_select('teambuilder_response',
                 "id IN (
                     SELECT r.id
@@ -226,5 +256,39 @@ class provider implements
                     WHERE q.builder = :instanceid AND r.userid = :userid
                 )", ['instanceid' => $instanceid, 'userid' => $userid]);
         }
+    }
+
+    /**
+     * Delete multiple users within a single context.
+     *
+     * @param approved_userlist $userlist The approved context and user information to delete information for.
+     */
+    public static function delete_data_for_users(approved_userlist $userlist) {
+        global $DB;
+
+        $context = $userlist->get_context();
+        $instanceid = self::get_teambuilder_id_from_context($context);
+        $userids = $userlist->get_userids();
+
+        if (empty($instanceid)) {
+            return;
+        }
+
+        // Prepare the SQL we'll need below.
+        list($insql, $inparams) = $DB->get_in_or_equal($userids, SQL_PARAMS_NAMED);
+        $params = array_merge($inparams, ['instanceid' => $instanceid]);
+        $DB->delete_records_select('teambuilder_response',
+                "id IN (
+                    SELECT r.id
+                    FROM {teambuilder_response} r
+                    JOIN {teambuilder_answer} a ON r.answerid = a.id
+                    JOIN {teambuilder_question} q ON a.question = q.id
+                    WHERE q.builder = :instanceid AND r.userid $insql
+                )", $params);
+    }
+
+    protected static function get_teambuilder_id_from_context(\context_module $context) {
+        $cm = get_coursemodule_from_id('teambuilder', $context->instanceid);
+        return $cm ? (int) $cm->instance : 0;
     }
 }
